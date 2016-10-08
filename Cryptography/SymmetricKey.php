@@ -145,12 +145,12 @@ abstract class SymmetricAlgorithm
         $message = mcrypt_decrypt($this->_cipherAlg, $this->Key, (($RawInput === TRUE) ? $Data : base64_decode($Data)), $this->Mode, $this->IV);
 
         switch ($this->PaddingMode)
-    	{
-	       	case PaddingMode::PKCS7:
+        {
+            case PaddingMode::PKCS7:
             case PaddingMode::Zeros:
                 $message = rtrim($message, sprintf("\x00..%02X", $this->BlockSize - 1));
                 break;
-
+            
             case PaddingMode::None:
                 break;
         }
