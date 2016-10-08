@@ -12,5 +12,3 @@ final class PaddingMode
     const PKCS7 = 1;
     const Zeros = 2;
 }
-
-?>

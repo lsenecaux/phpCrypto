@@ -38,5 +38,3 @@ final class CipherMode
      */
     const CTR = 'ctr';
 }
-
-?>

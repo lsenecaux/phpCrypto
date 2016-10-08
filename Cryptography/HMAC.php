@@ -37,4 +37,3 @@ final class HMAC extends HashAlgorithm
         return hash_hmac($this->Algorithm, $Data, $this->Key, $RawOutput);
     }
 }
-?>

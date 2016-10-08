@@ -53,7 +53,7 @@ class HashAlgorithm
         if (!array_key_exists($Property, $this->_properties))
             throw new \Exception(sprintf('%s::%s is not a valid property !', self::GetType(), $Property));
 
-            return $this->_properties[$Property];
+        return $this->_properties[$Property];
     }
 
     /**
@@ -67,11 +67,8 @@ class HashAlgorithm
     {
         if ($this->Algorithm == NULL)
             throw new \Exception(sprintf('%s::%s : Hash algorithm cannot be null', self::GetType(), __FUNCTION__));
-
-            //if ($this->Key == NULL)
-            //  throw new \Exception(sprintf('%s::%s : Key cannot be null', self::GetType(), __FUNCTION__));
-
-            return hash($this->Algorithm, $Data, $RawOuput);
+            
+        return hash($this->Algorithm, $Data, $RawOuput);
     }
 
     /**
@@ -94,7 +91,7 @@ class HashAlgorithm
         if (!in_array(strtolower($Algorithm), self::GetAlgorithms()))
             throw new \Exception(sprintf('%s::%s : Hash algorithm %s is not supported yet', __METHOD__, $Algorithm));
 
-            return strlen(hash(strtolower($Algorithm), NULL, true));
+        return strlen(hash(strtolower($Algorithm), NULL, true));
     }
 
     /**
@@ -125,7 +122,7 @@ class HashAlgorithm
         if (!is_a($Object, self::GetType()))
             return false;
 
-            return ($Object->GetHashCode() === self::GetHashCode()) ? true : false;
+        return ($Object->GetHashCode() === self::GetHashCode()) ? true : false;
     }
 
     /**
@@ -146,4 +143,3 @@ class HashAlgorithm
         return clone $this;
     }
 }
-

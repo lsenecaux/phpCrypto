@@ -58,5 +58,3 @@ final class AES extends SymmetricAlgorithm
         }
     }
 }
-
-?>

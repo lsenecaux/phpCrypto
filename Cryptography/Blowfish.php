@@ -101,5 +101,3 @@ final class Blowfish extends SymmetricAlgorithm
         parent::GenerateKey();
     }
 }
-
-?>

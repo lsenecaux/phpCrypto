@@ -57,5 +57,3 @@ final class Serpent extends SymmetricAlgorithm
         }
     }
 }
-
-?>
