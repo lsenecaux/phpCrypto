@@ -111,13 +111,13 @@ abstract class SymmetricAlgorithm
                 for ($i = $paddingLength; $i < $this->BlockSize; $i++)
                     $msg .= chr($this->BlockSize - $paddingLength);
                 break;
-        
-        	case PaddingMode::Zeros:
+            
+            case PaddingMode::Zeros:
                 $paddingLength = strlen($msg) % $this->BlockSize;
                 for ($i = $paddingLength; $i < $this->BlockSize; $i++)
                     $msg .= chr(0);
                 break;
-        
+            
             case PaddingMode::None:
                 break;
         }
