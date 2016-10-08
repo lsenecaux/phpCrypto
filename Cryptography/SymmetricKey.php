@@ -77,8 +77,7 @@ abstract class SymmetricAlgorithm
     
     /**
      * Generates a random initialization vector (IV) to use for the algorithm
-     * @throws \Exception
-     */
+     * @throws \Exception     */
     public function GenerateIV()
     {
         if ($this->BlockSize == NULL)
@@ -88,8 +87,7 @@ abstract class SymmetricAlgorithm
     }
     
     /**
-     * Encrypt the input data     
-     * @param string $Data
+     * Encrypt the input data          * @param string $Data
      * @param boolean $RawOutput
      * @throws \Exception
      * @return string
@@ -102,8 +100,9 @@ abstract class SymmetricAlgorithm
         if ($this->Key == NULL)
             throw new \Exception(sprintf('%s::%s : Key must be initialized', self::GetType(), __FUNCTION__));
 
-		$msg = $Data;
+	$msg = $Data;
 
+<<<<<<< HEAD
 		switch ($this->PaddingMode)
 		{
             case PaddingMode::PKCS7:
@@ -117,10 +116,25 @@ abstract class SymmetricAlgorithm
                 for ($i = $paddingLength; $i < $this->BlockSize; $i++)
                     $msg .= chr(0);
 				break;
+=======
+	switch ($this->PaddingMode)
+	{
+		case PaddingMode::PKCS7:
+			$paddingLength = strlen($msg) % $this->BlockSize;
+			for ($i = $paddingLength; $i < $this->BlockSize; $i++)
+				$msg .= chr($this->BlockSize - $paddingLength);
+			break;
 
-			case PaddingMode::None:
-				break;
-		}
+		case PaddingMode::Zeros:
+			$paddingLength = strlen($msg) % $this->BlockSize;
+		   	for ($i = $paddingLength; $i < $this->BlockSize; $i++)
+				$msg .= chr(0);
+			break;
+>>>>>>> origin/master
+
+		case PaddingMode::None:
+			break;
+	}
 
         $cipher = mcrypt_encrypt($this->_cipherAlg, $this->Key, $msg, $this->Mode, $this->IV);
     
@@ -142,20 +156,20 @@ abstract class SymmetricAlgorithm
         if ($this->Key == NULL)
             throw new \Exception(sprintf('%s::%s : Key must be initialized', self::GetType(), __FUNCTION__));
     
-		$message = mcrypt_decrypt($this->_cipherAlg, $this->Key, (($RawInput === TRUE) ? $Data : base64_decode($Data)), $this->Mode, $this->IV);
+	$message = mcrypt_decrypt($this->_cipherAlg, $this->Key, (($RawInput === TRUE) ? $Data : base64_decode($Data)), $this->Mode, $this->IV);
 
-		switch ($this->PaddingMode)
-		{
-			case PaddingMode::PKCS7:
-			case PaddingMode::Zeros:
-				$message = rtrim($message, sprintf("\x00..%02X", $this->BlockSize - 1));
-				break;
+	switch ($this->PaddingMode)
+	{
+		case PaddingMode::PKCS7:
+		case PaddingMode::Zeros:
+			$message = rtrim($message, sprintf("\x00..%02X", $this->BlockSize - 1));
+			break;
 
-			case PaddingMode::None:
-				break;
-		}
+		case PaddingMode::None:
+			break;
+	}
 
-		return $message;
+	return $message;
     }         
     
     /**
