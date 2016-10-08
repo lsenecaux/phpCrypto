@@ -1,12 +1,12 @@
 # phpCrypto
 Provides cryptographic classes for PHP
 
-# Encryption / Decryption
+### Encryption
 - AES
 - Serpent
 - Twofish
 - Blowfish
 
-# Hash
+### Hashing
 - Hash
 - HMAC
