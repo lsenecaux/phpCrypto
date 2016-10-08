@@ -35,11 +35,11 @@ class HashAlgorithm
         if (!array_key_exists($Property, $this->_properties))
             throw new \Exception(sprintf('%s::%s is not a valid property !', self::GetType(), $Property));
 
-            if ($Property == 'Algorithm')
-                if (!in_array(strtolower($Value), self::GetAlgorithms()))
-                    throw new \Exception(sprintf('%s : Hash algorithm %s is not supported', self::GetType(), self::GetType(), $Value));
+        if ($Property == 'Algorithm')
+            if (!in_array(strtolower($Value), self::GetAlgorithms()))
+                throw new \Exception(sprintf('%s : Hash algorithm %s is not supported', self::GetType(), self::GetType(), $Value));
 
-                    $this->_properties[$Property] = strtolower($Value);
+        $this->_properties[$Property] = strtolower($Value);
     }
 
     /**

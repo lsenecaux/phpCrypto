@@ -18,14 +18,14 @@ final class Serpent extends SymmetricAlgorithm
      */
     public static function Create()
     {
-        $snake = new Serpent();
-        $snake->KeySize = self::SERPENT_128;
+        $object = new Serpent();
+        $object->KeySize = self::SERPENT_128;
         
         // Serpent uses blocks of size 16 (128 bits)
-        $snake->_cipherAlg = MCRYPT_SERPENT;
-        $snake->BlockSize = 16;
+        $object->_cipherAlg = MCRYPT_SERPENT;
+        $object->BlockSize = 16;
         
-        return $snake;
+        return $object;
     }
     
     /**
