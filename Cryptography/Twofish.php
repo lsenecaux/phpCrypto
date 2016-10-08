@@ -57,5 +57,3 @@ final class Twofish extends SymmetricAlgorithm
         }
     }
 }
-
-?>

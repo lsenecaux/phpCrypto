@@ -106,16 +106,16 @@ abstract class SymmetricAlgorithm
 
 		switch ($this->PaddingMode)
 		{
-			case PaddingMode::PKCS7:
-				$paddingLength = strlen($msg) % $this->BlockSize;
-		            for ($i = $paddingLength; $i < $this->BlockSize; $i++)
-						$msg .= chr($this->BlockSize - $paddingLength);
+            case PaddingMode::PKCS7:
+                $paddingLength = strlen($msg) % $this->BlockSize;
+                for ($i = $paddingLength; $i < $this->BlockSize; $i++)
+                    $msg .= chr($this->BlockSize - $paddingLength);
 				break;
 
 			case PaddingMode::Zeros:
-				$paddingLength = strlen($msg) % $this->BlockSize;
-		            for ($i = $paddingLength; $i < $this->BlockSize; $i++)
-						$msg .= chr(0);
+                $paddingLength = strlen($msg) % $this->BlockSize;
+                for ($i = $paddingLength; $i < $this->BlockSize; $i++)
+                    $msg .= chr(0);
 				break;
 
 			case PaddingMode::None:
@@ -207,8 +207,3 @@ abstract class SymmetricAlgorithm
         return clone $this;
     }
 }
-
-
-
-
-?>
