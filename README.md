@@ -1,7 +1,7 @@
 # phpCrypto
 Provides cryptographic classes for PHP
 
-### Encryption
+### Symmetric Encryption
 - AES
 - Serpent
 - Twofish
