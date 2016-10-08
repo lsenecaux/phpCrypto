@@ -104,20 +104,20 @@ abstract class SymmetricAlgorithm
 
         $msg = $Data;
 
-		switch ($this->PaddingMode)
-		{
+        switch ($this->PaddingMode)
+        {
             case PaddingMode::PKCS7:
                 $paddingLength = strlen($msg) % $this->BlockSize;
                 for ($i = $paddingLength; $i < $this->BlockSize; $i++)
                     $msg .= chr($this->BlockSize - $paddingLength);
-				break;
-
-			case PaddingMode::Zeros:
+        		break;
+        
+        	case PaddingMode::Zeros:
                 $paddingLength = strlen($msg) % $this->BlockSize;
                 for ($i = $paddingLength; $i < $this->BlockSize; $i++)
                     $msg .= chr(0);
-				break;
-
+        		break;
+        
             case PaddingMode::None:
                 break;
         }
