@@ -102,7 +102,7 @@ abstract class SymmetricAlgorithm
         if ($this->Key == NULL)
             throw new \Exception(sprintf('%s::%s : Key must be initialized', self::GetType(), __FUNCTION__));
 
-	   $msg = $Data;
+        $msg = $Data;
 
 		switch ($this->PaddingMode)
 		{
