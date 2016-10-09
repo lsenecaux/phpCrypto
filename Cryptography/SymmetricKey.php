@@ -101,28 +101,8 @@ abstract class SymmetricAlgorithm
     
         if ($this->Key == NULL)
             throw new \Exception(sprintf('%s::%s : Key must be initialized', self::GetType(), __FUNCTION__));
-
-        $msg = $Data;
-
-        switch ($this->PaddingMode)
-        {
-            case PaddingMode::PKCS7:
-                $paddingLength = strlen($msg) % $this->BlockSize;
-                for ($i = $paddingLength; $i < $this->BlockSize; $i++)
-                    $msg .= chr($this->BlockSize - $paddingLength);
-                break;
-            
-            case PaddingMode::Zeros:
-                $paddingLength = strlen($msg) % $this->BlockSize;
-                for ($i = $paddingLength; $i < $this->BlockSize; $i++)
-                    $msg .= chr(0);
-                break;
-            
-            case PaddingMode::None:
-                break;
-        }
-
-        $cipher = mcrypt_encrypt($this->_cipherAlg, $this->Key, $msg, $this->Mode, $this->IV);
+                    
+        $cipher = mcrypt_encrypt($this->_cipherAlg, $this->Key, self::_pad($Data), $this->Mode, $this->IV);
     
         return ($RawOutput === TRUE) ? $cipher : base64_encode($cipher);
     }
@@ -144,19 +124,59 @@ abstract class SymmetricAlgorithm
     
         $message = mcrypt_decrypt($this->_cipherAlg, $this->Key, (($RawInput === TRUE) ? $Data : base64_decode($Data)), $this->Mode, $this->IV);
 
-        switch ($this->PaddingMode)
-        {
-            case PaddingMode::PKCS7:
-            case PaddingMode::Zeros:
-                $message = rtrim($message, sprintf("\x00..%02X", $this->BlockSize - 1));
-                break;
-            
-            case PaddingMode::None:
-                break;
-        }
+        return self::_unpad($message);
+    }
+    
+    /**
+     * Right-pads the input data according to the Padding Mode
+     * @param string $Data
+     * @return string
+     */
+    private function _pad($Data)
+    {
+        if ($this->PaddingMode == PaddingMode::None)
+            return $Data;
         
-        return $message;
-    }         
+        $padSize = $this->BlockSize - (strlen($Data) % $this->BlockSize);
+        $padChar = ($this->PaddingMode == PaddingMode::PKCS7) ? chr($padSize) : chr(0);
+        
+        return $Data . str_repeat($padChar, $padSize);
+    }
+    
+    /**
+     * Validates and unpads the input data according to the Padding Mode
+     * @param string $Data
+     * @return string
+     */
+    private function _unpad($Data)
+    {
+        // No padding
+        if ($this->PaddingMode == PaddingMode::None)
+            return $Data;
+        
+        // Zeros padding
+        if ($this->PaddingMode == PaddingMode::Zeros)
+            return rtrim($Data, chr(0));
+        
+        // PKCS#7 padding
+        $dataLength = strlen($Data);
+        
+        if (($dataLength % $this->BlockSize) != 0)
+            throw new \Exception(sprintf('%s::%s : Input data cannot be devided by the block size', self::GetType(), __FUNCTION__));
+        
+        $padSize = ord($Data[$dataLength - 1]);
+
+        if ($padSize === 0)
+            throw new \Exception(sprintf('%s::%s : Zeros padding found instead of PKCS#7 padding', self::GetType(), __FUNCTION__));
+        
+        if ($padSize > $this->BlockSize)
+            throw new \Exception(sprintf('%s::%s : Incorrect amount of PKCS#7 padding for block size', self::GetType(), __FUNCTION__));
+        
+        if (substr_count(substr($Data, -1 * $padSize), chr($padSize)) != $padSize)
+            throw new \Exception(sprintf('%s::%s : Invalid PKCS#7 padding encountered', self::GetType(), __FUNCTION__));
+        
+        return substr($Data, 0, $dataLength - $padSize);
+    }
     
     /**
      * Returns a string that represents the current object
