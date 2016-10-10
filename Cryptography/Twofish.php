@@ -15,10 +15,10 @@ final class Twofish extends SymmetricAlgorithm
     public static function Create()
     {
         $object = new Twofish();
-        $object->_properties = array(
+        $object->_properties['LegalKeySizes'] = array(
             parent::KEY_SIZE_128,
             parent::KEY_SIZE_192,
-            parent::KEY_SIZE_156
+            parent::KEY_SIZE_256
         );
         $object->KeySize = parent::KEY_SIZE_128;
 
