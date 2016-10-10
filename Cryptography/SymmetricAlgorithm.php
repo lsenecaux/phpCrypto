@@ -82,7 +82,10 @@ abstract class SymmetricAlgorithm
     public function GenerateIV()
     {
         if ($this->BlockSize == NULL)
-            throw new \Exception(sprintf('%s::%s : Block size cannot be null', self::GetType(), __FUNCTION__));        
+            throw new \Exception(sprintf('%s::%s : Block size cannot be null', self::GetType(), __FUNCTION__));
+        
+        if ($this->BlockSize != ($requiredBlockSize = mcrypt_get_block_size($this->_cipherAlg, $this->Mode)))
+            throw new \Exception(sprintf('%s::%s : Block of size %d not supported by this algorithm. Only blocks of size %d are supported', self::GetType(), __FUNCTION__, $this->BlockSize, $requiredBlockSize));
         
         $this->IV = mcrypt_create_iv($this->BlockSize, MCRYPT_RAND);
     }
