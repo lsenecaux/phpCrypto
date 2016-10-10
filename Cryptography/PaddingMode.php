@@ -11,4 +11,6 @@ final class PaddingMode
     const None  = 0;
     const PKCS7 = 1;
     const Zeros = 2;
+    const ANSIX923 = 3;
+    const ISO10126 = 4;
 }
