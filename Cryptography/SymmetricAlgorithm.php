@@ -151,11 +151,11 @@ abstract class SymmetricAlgorithm
                 $padString = str_repeat(chr($padSize), $padSize);
                 break;
                 
-            case PaddingMode::ANSIX923
+            case PaddingMode::ANSIX923:
                 $padString = str_repeat(chr(0), $padSize - 1) . chr($padSize);
                 break;
                 
-            case PaddingMode::ISO10126
+            case PaddingMode::ISO10126:
                 $padString = str_repeat(chr(mt_rand(0, 255)), $padSize - 1) . chr($padSize);
                 break;
         }
