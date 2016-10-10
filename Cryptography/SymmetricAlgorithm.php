@@ -118,8 +118,8 @@ abstract class SymmetricAlgorithm
         if ($Property == 'KeySize' && !in_array($Value, $this->LegalKeySizes))
             throw new \Exception(sprintf('%s::%s : Key of size %d not supported by this algorithm. Only keys of size %s are supported', self::GetType(), $Property, $Value, implode(', ', $this->LegalKeySizes)));
         
-        if ($Property == 'Padding' && !in_array($Value, (new \ReflectionClass('PaddingMode'))->getConstants()))
-            throw new \Exception(sprintf('%s::%s : Padding value %d is not supported. Only padding values %s are supported', self::GetType(), $Property, $Value, implode(', ', (array_flip((new \ReflectionClass('PaddingMode'))->getConstants())))));
+        if ($Property == 'Padding' && !in_array($Value, (new \ReflectionClass('\Cryptography\PaddingMode'))->getConstants()))
+            throw new \Exception(sprintf('%s::%s : Padding value %d is not supported. Only padding values %s are supported', self::GetType(), $Property, $Value, implode(', ', (array_flip((new \ReflectionClass('\Cryptography\PaddingMode'))->getConstants())))));
         
         $this->_properties[$Property] = $Value;
     }
@@ -272,21 +272,21 @@ abstract class SymmetricAlgorithm
                 $padSize = ord($Data[$dataLength - 1]);
 
                 if ($padSize === 0)
-                    throw new \Exception(sprintf('%s::%s : Zeros padding found instead of %s padding', self::GetType(), __FUNCTION__, array_search($this->Padding, (new \ReflectionClass('PaddingMode'))->getConstants())));
+                    throw new \Exception(sprintf('%s::%s : Zeros padding found instead of %s padding', self::GetType(), __FUNCTION__, array_search($this->Padding, (new \ReflectionClass('\Cryptography\PaddingMode'))->getConstants())));
 
                 if ($padSize > $this->BlockSize)
-                    throw new \Exception(sprintf('%s::%s : Incorrect amount of %s padding for block size', self::GetType(), __FUNCTION__, array_search($this->Padding, (new \ReflectionClass('PaddingMode'))->getConstants())));
+                    throw new \Exception(sprintf('%s::%s : Incorrect amount of %s padding for block size', self::GetType(), __FUNCTION__, array_search($this->Padding, (new \ReflectionClass('\Cryptography\PaddingMode'))->getConstants())));
 
                 switch ($this->Padding)
                 {
                     case PaddingMode::PKCS7:
                         if (substr_count(substr($Data, -1 * $padSize), chr($padSize)) != $padSize)
-                            throw new \Exception(sprintf('%s::%s : Invalid %s padding encountered', self::GetType(), __FUNCTION__, array_search($this->Padding, (new \ReflectionClass('PaddingMode'))->getConstants())));                        
+                            throw new \Exception(sprintf('%s::%s : Invalid %s padding encountered', self::GetType(), __FUNCTION__, array_search($this->Padding, (new \ReflectionClass('\Cryptography\PaddingMode'))->getConstants())));                        
                         break;
                         
                     case PaddingMode::ANSIX923:
                         if (substr_count(substr($Data, -1 * $padSize, -1), chr(0)) != $padSize - 1)
-                            throw new \Exception(sprintf('%s::%s : Invalid %s padding encountered', self::GetType(), __FUNCTION__, array_search($this->Padding, (new \ReflectionClass('PaddingMode'))->getConstants())));                        
+                            throw new \Exception(sprintf('%s::%s : Invalid %s padding encountered', self::GetType(), __FUNCTION__, array_search($this->Padding, (new \ReflectionClass('\Cryptography\PaddingMode'))->getConstants())));                        
                         break;
                 }
                 
