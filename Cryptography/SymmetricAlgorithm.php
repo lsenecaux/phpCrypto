@@ -187,43 +187,7 @@ abstract class SymmetricAlgorithm
                 return rtrim($Data, chr(0));
 
             case PaddingMode::PKCS7:
-                $dataLength = strlen($Data);
-
-                if (($dataLength % $this->BlockSize) != 0)
-                    throw new \Exception(sprintf('%s::%s : Input data cannot be devided by the block size', self::GetType(), __FUNCTION__));
-
-                $padSize = ord($Data[$dataLength - 1]);
-
-                if ($padSize === 0)
-                    throw new \Exception(sprintf('%s::%s : Zeros padding found instead of PKCS#7 padding', self::GetType(), __FUNCTION__));
-
-                if ($padSize > $this->BlockSize)
-                    throw new \Exception(sprintf('%s::%s : Incorrect amount of PKCS#7 padding for block size', self::GetType(), __FUNCTION__));
-
-                if (substr_count(substr($Data, -1 * $padSize), chr($padSize)) != $padSize)
-                    throw new \Exception(sprintf('%s::%s : Invalid PKCS#7 padding encountered', self::GetType(), __FUNCTION__));
-
-                return substr($Data, 0, $dataLength - $padSize);
-
             case PaddingMode::ANSIX923:
-                $dataLength = strlen($Data);
-
-                if (($dataLength % $this->BlockSize) != 0)
-                    throw new \Exception(sprintf('%s::%s : Input data cannot be devided by the block size', self::GetType(), __FUNCTION__));
-
-                $padSize = ord($Data[$dataLength - 1]);
-
-                if ($padSize === 0)
-                    throw new \Exception(sprintf('%s::%s : Zeros padding found instead of ANSI-X.923 padding', self::GetType(), __FUNCTION__));
-                
-                if ($padSize > $this->BlockSize)
-                    throw new \Exception(sprintf('%s::%s : Incorrect amount of ANSI-X.923 padding for block size', self::GetType(), __FUNCTION__));
-                
-                if (substr_count(substr($Data, -1 * $padSize, -1), chr(0)) != $padSize - 1)
-                    throw new \Exception(sprintf('%s::%s : Invalid ANSI-X.923 padding encountered', self::GetType(), __FUNCTION__));
-                
-                return substr($Data, 0, $dataLength - $padSize);
-
             case PaddingMode::ISO10126:
                 $dataLength = strlen($Data);
 
@@ -233,12 +197,26 @@ abstract class SymmetricAlgorithm
                 $padSize = ord($Data[$dataLength - 1]);
 
                 if ($padSize === 0)
-                    throw new \Exception(sprintf('%s::%s : Zeros padding found instead of ISO-10126 padding', self::GetType(), __FUNCTION__));
-                
+                    throw new \Exception(sprintf('%s::%s : Zeros padding found instead of %s padding', self::GetType(), __FUNCTION__, array_search($this->PaddingMode, (new ReflectionClass('PaddingMode'))->getConstants())));
+
                 if ($padSize > $this->BlockSize)
-                    throw new \Exception(sprintf('%s::%s : Incorrect amount of ISO-10126 padding for block size', self::GetType(), __FUNCTION__));
+                    throw new \Exception(sprintf('%s::%s : Incorrect amount of %s padding for block size', self::GetType(), __FUNCTION__, array_search($this->PaddingMode, (new ReflectionClass('PaddingMode'))->getConstants())));
+
+                switch ($this->PaddingMode)
+                {
+                    case PaddingMode::PKCS7:
+                        if (substr_count(substr($Data, -1 * $padSize), chr($padSize)) != $padSize)
+                            throw new \Exception(sprintf('%s::%s : Invalid %s padding encountered', self::GetType(), __FUNCTION__, array_search($this->PaddingMode, (new ReflectionClass('PaddingMode'))->getConstants())));                        
+                        break;
+                        
+                    case PaddingMode::ANSIX923:
+                        if (substr_count(substr($Data, -1 * $padSize, -1), chr(0)) != $padSize - 1)
+                            throw new \Exception(sprintf('%s::%s : Invalid %s padding encountered', self::GetType(), __FUNCTION__, array_search($this->PaddingMode, (new ReflectionClass('PaddingMode'))->getConstants())));                        
+                        break;
+                }
                 
                 return substr($Data, 0, $dataLength - $padSize);
+        }
     }
     
     /**
