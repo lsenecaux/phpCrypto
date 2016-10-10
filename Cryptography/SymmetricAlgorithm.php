@@ -8,6 +8,68 @@ namespace Cryptography;
  */
 abstract class SymmetricAlgorithm
 {
+    const KEY_SIZE_32 = 4;
+    const KEY_SIZE_40 = 5;
+    const KEY_SIZE_48 = 6;
+    const KEY_SIZE_56 = 7;
+    const KEY_SIZE_64 = 8;
+    const KEY_SIZE_72 = 9;
+    const KEY_SIZE_80 = 10;
+    const KEY_SIZE_88 = 11;
+    const KEY_SIZE_96 = 12;
+    const KEY_SIZE_104 = 13;
+    const KEY_SIZE_112 = 14;
+    const KEY_SIZE_120 = 15;
+    const KEY_SIZE_128 = 16;
+    const KEY_SIZE_136 = 17;
+    const KEY_SIZE_144 = 18;
+    const KEY_SIZE_152 = 19;
+    const KEY_SIZE_160 = 20;
+    const KEY_SIZE_168 = 21;
+    const KEY_SIZE_176 = 22;
+    const KEY_SIZE_184 = 23;
+    const KEY_SIZE_192 = 24;
+    const KEY_SIZE_200 = 25;
+    const KEY_SIZE_208 = 26;
+    const KEY_SIZE_216 = 27;
+    const KEY_SIZE_224 = 28;
+    const KEY_SIZE_232 = 29;
+    const KEY_SIZE_240 = 30;
+    const KEY_SIZE_248 = 31;
+    const KEY_SIZE_256 = 32;
+    const KEY_SIZE_264 = 33;
+    const KEY_SIZE_272 = 34;
+    const KEY_SIZE_280 = 35;
+    const KEY_SIZE_288 = 36;
+    const KEY_SIZE_296 = 37;
+    const KEY_SIZE_304 = 38;
+    const KEY_SIZE_312 = 39;
+    const KEY_SIZE_320 = 40;
+    const KEY_SIZE_328 = 41;
+    const KEY_SIZE_336 = 42;
+    const KEY_SIZE_344 = 43;
+    const KEY_SIZE_352 = 44;
+    const KEY_SIZE_360 = 45;
+    const KEY_SIZE_368 = 46;
+    const KEY_SIZE_376 = 47;
+    const KEY_SIZE_384 = 48;
+    const KEY_SIZE_392 = 49;
+    const KEY_SIZE_400 = 50;
+    const KEY_SIZE_408 = 51;
+    const KEY_SIZE_416 = 52;
+    const KEY_SIZE_424 = 53;
+    const KEY_SIZE_432 = 54;
+    const KEY_SIZE_440 = 55;
+    const KEY_SIZE_448 = 56;
+    const KEY_SIZE_456 = 57;
+    const KEY_SIZE_464 = 58;
+    const KEY_SIZE_472 = 59;
+    const KEY_SIZE_480 = 60;
+    const KEY_SIZE_488 = 61;
+    const KEY_SIZE_496 = 62;
+    const KEY_SIZE_504 = 63;
+    const KEY_SIZE_512 = 64;
+    
     /**
      * Properties
      * @var array
@@ -26,12 +88,13 @@ abstract class SymmetricAlgorithm
     protected function __construct()
     {
         $this->_properties = array(
-            'BlockSize'     => NULL,                // Gets or sets the block size, in bits, of the cryptographic operation
-            'KeySize'       => NULL,                // Gets or sets the size, in bits, of the secret key used by the symmetric algorithm
-            'Key'           => NULL,                // Gets or sets the secret key for the symmetric algorithm
-            'IV'            => NULL,                // Gets or sets the initialization vector (IV) for the symmetric algorithm
-            'Mode'          => CipherMode::CBC,		// Gets or sets the mode for operation of the symmetric algorithm
-            'PaddingMode'   => PaddingMode::PKCS7   // Gets or sets the padding mode used in the symmetric algorithm
+            'BlockSize'     => NULL,                // Represents the block size, in bits, of the cryptographic operation
+            'LegalKeySizes' => NULL,                // Specifies the key sizes, in bits, that are supported by the symmetric algorithm
+            'KeySize'       => NULL,                // Represents the size, in bits, of the secret key used by the symmetric algorithm
+            'Key'           => NULL,                // Represents the secret key for the symmetric algorithm
+            'IV'            => NULL,                // Represents the initialization vector (IV) for the symmetric algorithm
+            'Mode'          => CipherMode::CBC,		// Represents the cipher mode used in the symmetric algorithm
+            'Padding'       => PaddingMode::PKCS7   // Represents the padding mode used in the symmetric algorithm
         );
     }
     
@@ -44,11 +107,20 @@ abstract class SymmetricAlgorithm
     public function __set($Property, $Value)
     {
         if (!array_key_exists($Property, $this->_properties))
-            throw new \Exception(sprintf('%s::%s is not a valid property !', self::GetType(), $Property));
+            throw new \Exception(sprintf('%s::%s : This is not a valid property', self::GetType(), $Property));
+        
+        if ($Property == 'LegalKeySizes')
+            throw new \Exception(sprintf('%s::%s : This is a read only property', self::GetType(), $Property));
         
         if ($Property == 'BlockSize' && $Value != ($requiredBlockSize = mcrypt_get_block_size($this->_cipherAlg, $this->Mode)))
-            throw new \Exception(sprintf('%s::%s : Block of size %d not supported by this algorithm. Only blocks of size %d are supported', self::GetType(), __FUNCTION__, $Value, $requiredBlockSize));
+            throw new \Exception(sprintf('%s::%s : Block of size %d not supported by this algorithm. Only blocks of size %d are supported', self::GetType(), $Property, $Value, $requiredBlockSize));
 
+        if ($Property == 'KeySize' && !in_array($Value, $this->LegalKeySizes))
+            throw new \Exception(sprintf('%s::%s : Key of size %d not supported by this algorithm. Only keys of size %s are supported', self::GetType(), $Property, $Value, implode(', ', $this->LegalKeySizes)));
+        
+        if ($Property == 'Padding' && !in_array($Value, (new ReflectionClass('PaddingMode'))->getConstants()))
+            throw new \Exception(sprintf('%s::%s : Padding value %d is not supported. Only padding values %s are supported', self::GetType(), $Property, $Value, implode(', ', (array_flip((new ReflectionClass('Cryptography\PaddingMode'))->getConstants())))));
+        
         $this->_properties[$Property] = $Value;
     }
     
@@ -140,7 +212,7 @@ abstract class SymmetricAlgorithm
         $padSize = $this->BlockSize - (strlen($Data) % $this->BlockSize);
         $padString = '';
         
-        switch ($this->PaddingMode)
+        switch ($this->Padding)
         {
             case PaddingMode::None:
                 $padString = '';
@@ -173,7 +245,7 @@ abstract class SymmetricAlgorithm
      */
     private function _unpad($Data)
     {
-        switch ($this->PaddingMode)
+        switch ($this->Padding)
         {
             case PaddingMode::None:
                 return $Data;
@@ -205,7 +277,7 @@ abstract class SymmetricAlgorithm
                 if ($padSize > $this->BlockSize)
                     throw new \Exception(sprintf('%s::%s : Incorrect amount of %s padding for block size', self::GetType(), __FUNCTION__, array_search($this->PaddingMode, (new ReflectionClass('PaddingMode'))->getConstants())));
 
-                switch ($this->PaddingMode)
+                switch ($this->Padding)
                 {
                     case PaddingMode::PKCS7:
                         if (substr_count(substr($Data, -1 * $padSize), chr($padSize)) != $padSize)
