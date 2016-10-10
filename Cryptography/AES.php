@@ -16,9 +16,9 @@ final class AES extends SymmetricAlgorithm
     {
         $object = new AES();
         $object->_properties['LegalKeySizes'] = array(
-            parent::::KEY_SIZE_128,
-            parent::::KEY_SIZE_192,
-            parent::::KEY_SIZE_256,
+            parent::KEY_SIZE_128,
+            parent::KEY_SIZE_192,
+            parent::KEY_SIZE_256,
         );
         $object->KeySize = parent::KEY_SIZE_128;
 
