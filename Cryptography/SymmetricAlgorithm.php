@@ -46,6 +46,9 @@ abstract class SymmetricAlgorithm
         if (!array_key_exists($Property, $this->_properties))
             throw new \Exception(sprintf('%s::%s is not a valid property !', self::GetType(), $Property));
         
+        if ($Property == 'BlockSize' && $Value != ($requiredBlockSize = mcrypt_get_block_size($this->_cipherAlg, $this->Mode)))
+            throw new \Exception(sprintf('%s::%s : Block of size %d not supported by this algorithm. Only blocks of size %d are supported', self::GetType(), __FUNCTION__, $Value, $requiredBlockSize));
+
         $this->_properties[$Property] = $Value;
     }
     
@@ -81,11 +84,8 @@ abstract class SymmetricAlgorithm
      */
     public function GenerateIV()
     {
-        if ($this->BlockSize == NULL)
-            throw new \Exception(sprintf('%s::%s : Block size cannot be null', self::GetType(), __FUNCTION__));
-        
-        if ($this->BlockSize != ($requiredBlockSize = mcrypt_get_block_size($this->_cipherAlg, $this->Mode)))
-            throw new \Exception(sprintf('%s::%s : Block of size %d not supported by this algorithm. Only blocks of size %d are supported', self::GetType(), __FUNCTION__, $this->BlockSize, $requiredBlockSize));
+        if (($ivSize = @mcrypt_get_iv_size($this->_cipherAlg, $this->Mode)) != $this->BlockSize)
+            throw new \Exception(sprintf('%s::%s : The required IV size is %d, and must match the block size (%d)', self::GetType(), __FUNCTION__, $ivSize, $this->BlockSize));
         
         $this->IV = mcrypt_create_iv($this->BlockSize, MCRYPT_RAND);
     }
