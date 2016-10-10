@@ -133,14 +133,34 @@ abstract class SymmetricAlgorithm
      * @return string
      */
     private function _pad($Data)
-    {
-        if ($this->PaddingMode == PaddingMode::None)
-            return $Data;
-        
+    {        
         $padSize = $this->BlockSize - (strlen($Data) % $this->BlockSize);
-        $padChar = ($this->PaddingMode == PaddingMode::PKCS7) ? chr($padSize) : chr(0);
+        $padString = '';
         
-        return $Data . str_repeat($padChar, $padSize);
+        switch ($this->PaddingMode)
+        {
+            case PaddingMode::None:
+                $padString = '';
+                break;
+                
+            case PaddingMode::Zeros:
+                $padString = str_repeat(chr(0), $padSize);
+                break;
+                
+            case PaddingMode::PKCS7:
+                $padString = str_repeat(chr($padSize), $padSize);
+                break;
+                
+            case PaddingMode::ANSIX923
+                $padString = str_repeat(chr(0), $padSize - 1) . chr($padSize);
+                break;
+                
+            case PaddingMode::ISO10126
+                $padString = str_repeat(chr(mt_rand(0, 255)), $padSize - 1) . chr($padSize);
+                break;
+        }
+        
+        return $Data . $padString;
     }
     
     /**
@@ -150,32 +170,75 @@ abstract class SymmetricAlgorithm
      */
     private function _unpad($Data)
     {
-        // No padding
-        if ($this->PaddingMode == PaddingMode::None)
-            return $Data;
+        switch ($this->PaddingMode)
+        {
+            case PaddingMode::None:
+                return $Data;
         
-        // Zeros padding
-        if ($this->PaddingMode == PaddingMode::Zeros)
-            return rtrim($Data, chr(0));
-        
-        // PKCS#7 padding
-        $dataLength = strlen($Data);
-        
-        if (($dataLength % $this->BlockSize) != 0)
-            throw new \Exception(sprintf('%s::%s : Input data cannot be devided by the block size', self::GetType(), __FUNCTION__));
-        
-        $padSize = ord($Data[$dataLength - 1]);
+            case PaddingMode::Zeros:
+                $dataLength = strlen($Data);
+                
+                if (($dataLength % $this->BlockSize) != 0)
+                    throw new \Exception(sprintf('%s::%s : Input data cannot be devided by the block size', self::GetType(), __FUNCTION__));
+                
+                if (ord($Data[$dataLength - 1]) !== 0)
+                    throw new \Exception(sprintf('%s::%s : The padding is different from zeros or there is no padding', self::GetType(), __FUNCTION__));
+                
+                return rtrim($Data, chr(0));
 
-        if ($padSize === 0)
-            throw new \Exception(sprintf('%s::%s : Zeros padding found instead of PKCS#7 padding', self::GetType(), __FUNCTION__));
-        
-        if ($padSize > $this->BlockSize)
-            throw new \Exception(sprintf('%s::%s : Incorrect amount of PKCS#7 padding for block size', self::GetType(), __FUNCTION__));
-        
-        if (substr_count(substr($Data, -1 * $padSize), chr($padSize)) != $padSize)
-            throw new \Exception(sprintf('%s::%s : Invalid PKCS#7 padding encountered', self::GetType(), __FUNCTION__));
-        
-        return substr($Data, 0, $dataLength - $padSize);
+            case PaddingMode::PKCS7:
+                $dataLength = strlen($Data);
+
+                if (($dataLength % $this->BlockSize) != 0)
+                    throw new \Exception(sprintf('%s::%s : Input data cannot be devided by the block size', self::GetType(), __FUNCTION__));
+
+                $padSize = ord($Data[$dataLength - 1]);
+
+                if ($padSize === 0)
+                    throw new \Exception(sprintf('%s::%s : Zeros padding found instead of PKCS#7 padding', self::GetType(), __FUNCTION__));
+
+                if ($padSize > $this->BlockSize)
+                    throw new \Exception(sprintf('%s::%s : Incorrect amount of PKCS#7 padding for block size', self::GetType(), __FUNCTION__));
+
+                if (substr_count(substr($Data, -1 * $padSize), chr($padSize)) != $padSize)
+                    throw new \Exception(sprintf('%s::%s : Invalid PKCS#7 padding encountered', self::GetType(), __FUNCTION__));
+
+                return substr($Data, 0, $dataLength - $padSize);
+
+            case PaddingMode::ANSIX923:
+                $dataLength = strlen($Data);
+
+                if (($dataLength % $this->BlockSize) != 0)
+                    throw new \Exception(sprintf('%s::%s : Input data cannot be devided by the block size', self::GetType(), __FUNCTION__));
+
+                $padSize = ord($Data[$dataLength - 1]);
+
+                if ($padSize === 0)
+                    throw new \Exception(sprintf('%s::%s : Zeros padding found instead of ANSI-X.923 padding', self::GetType(), __FUNCTION__));
+                
+                if ($padSize > $this->BlockSize)
+                    throw new \Exception(sprintf('%s::%s : Incorrect amount of ANSI-X.923 padding for block size', self::GetType(), __FUNCTION__));
+                
+                if (substr_count(substr($Data, -1 * $padSize, -1), chr(0)) != $padSize - 1)
+                    throw new \Exception(sprintf('%s::%s : Invalid ANSI-X.923 padding encountered', self::GetType(), __FUNCTION__));
+                
+                return substr($Data, 0, $dataLength - $padSize);
+
+            case PaddingMode::ISO10126:
+                $dataLength = strlen($Data);
+
+                if (($dataLength % $this->BlockSize) != 0)
+                    throw new \Exception(sprintf('%s::%s : Input data cannot be devided by the block size', self::GetType(), __FUNCTION__));
+
+                $padSize = ord($Data[$dataLength - 1]);
+
+                if ($padSize === 0)
+                    throw new \Exception(sprintf('%s::%s : Zeros padding found instead of ISO-10126 padding', self::GetType(), __FUNCTION__));
+                
+                if ($padSize > $this->BlockSize)
+                    throw new \Exception(sprintf('%s::%s : Incorrect amount of ISO-10126 padding for block size', self::GetType(), __FUNCTION__));
+                
+                return substr($Data, 0, $dataLength - $padSize);
     }
     
     /**
