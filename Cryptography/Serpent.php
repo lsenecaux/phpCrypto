@@ -15,7 +15,7 @@ final class Serpent extends SymmetricAlgorithm
     public static function Create()
     {
         $object = new Serpent();
-        $object->_properties['LegalKeySize'] = array(
+        $object->_properties['LegalKeySizes'] = array(
             parent::KEY_SIZE_128,
             parent::KEY_SIZE_192,
             parent::KEY_SIZE_256
