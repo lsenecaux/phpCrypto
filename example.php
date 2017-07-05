@@ -1,9 +1,9 @@
 <?php
 
-require_once 'Cryptography\SymmetricAlgorithm.php';
-require_once 'Cryptography\AES.php';
-require_once 'Cryptography\CipherMode.php';
-require_once 'Cryptography\PaddingMode.php';
+require_once 'Cryptography/SymmetricAlgorithm.php';
+require_once 'Cryptography/AES.php';
+require_once 'Cryptography/CipherMode.php';
+require_once 'Cryptography/PaddingMode.php';
 
 $object = \Cryptography\AES::Create();
 $object->KeySize = \Cryptography\SymmetricAlgorithm::KEY_SIZE_256;
