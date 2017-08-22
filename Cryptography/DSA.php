@@ -42,7 +42,7 @@ final class DSA extends AsymmetricAlgorithm
      * @param string $Passphrase
      * @return \Cryptography\DSA
      */
-    public static  function CreateFromString($PEM, $Passphrase = NULL)
+    public static function CreateFromString($PEM, $Passphrase = NULL)
     {
         $object = new DSA();
         //$object->_resource = openssl_pkey_get_private($PEM, $Passphrase);
@@ -96,7 +96,6 @@ final class DSA extends AsymmetricAlgorithm
         $xml = new \DOMDocument('1.0', 'UTF-8');
         $root = $xml->createElement('DSAKeyValue');
     
-
         foreach ($this->_properties['Params'] as $param => $value)
             $root->appendChild($xml->createElement($param, $value));
         
