@@ -54,7 +54,7 @@ abstract class SymmetricAlgorithm
     const KEY_SIZE_376 = 47;
     const KEY_SIZE_384 = 48;
     const KEY_SIZE_392 = 49;
-    const KEY_SIZE_400 = 50;
+s    const KEY_SIZE_400 = 50;
     const KEY_SIZE_408 = 51;
     const KEY_SIZE_416 = 52;
     const KEY_SIZE_424 = 53;
@@ -99,7 +99,7 @@ abstract class SymmetricAlgorithm
     }
     
     /**
-     * Set a property
+     * Sets a property
      * @param string $Property
      * @param mixed $Value
      * @throws \Exception
@@ -125,7 +125,7 @@ abstract class SymmetricAlgorithm
     }
     
     /**
-     * Get a property
+     * Gets a property
      * @param string $Property
      * @throws \Exception
      * @return mixed
@@ -163,7 +163,7 @@ abstract class SymmetricAlgorithm
     }
     
     /**
-     * Encrypt the input data          
+     * Encrypts the input data          
      * @param string $Data
      * @param boolean $RawOutput
      * @throws \Exception
@@ -183,7 +183,7 @@ abstract class SymmetricAlgorithm
     }
     
     /**
-     * Decrypt the input data
+     * Decrypts the input data
      * @param string $Data 
      * @param boolean $RawInput
      * @throws \Exception
