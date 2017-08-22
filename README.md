@@ -1,3 +1,4 @@
+
 # phpCrypto
 Provides cryptographic classes for PHP
 
@@ -6,6 +7,10 @@ Provides cryptographic classes for PHP
 - Serpent
 - Twofish
 - Blowfish
+
+### Asymmetric Algorithm
+- RSA
+- DSA
 
 ### Hashing
 - Hash
