@@ -43,10 +43,10 @@ final class RSA extends AsymmetricAlgorithm
      * @param string $Passphrase
      * @return \Cryptography\RSA
      */
-    public static  function CreateFromString($PEM, $Passphrase = NULL)
+    public static function CreateFromString($PEM, $Passphrase = NULL)
     {
         $object = new RSA();
-        //$object->_resource = ($PublicOnly === FALSE) ? openssl_pkey_get_private($PEM, $Passphrase) : openssl_pkey_get_public($PEM);
+        
         try
         {
             $object->_resource = openssl_pkey_get_private($PEM, $Passphrase);
@@ -111,8 +111,8 @@ final class RSA extends AsymmetricAlgorithm
             if ($this->_publicOnly === TRUE)
                 throw new \Exception('This is a public key, private data cannot be exported');
 
-                foreach ($this->_properties['Params'] as $param => $value)
-                    $root->appendChild($xml->createElement($param, $value));
+            foreach ($this->_properties['Params'] as $param => $value)
+                $root->appendChild($xml->createElement($param, $value));
         }
 
         $xml->appendChild($root);
@@ -130,7 +130,7 @@ final class RSA extends AsymmetricAlgorithm
     public function Encrypt($Data, $RawOutput = TRUE)
     {
         if (!openssl_public_encrypt($Data, $cipherText, sprintf("-----BEGIN PUBLIC KEY-----\n%s\n-----END PUBLIC KEY-----", base64_encode($this->PublicKey))));
-        throw new \Exception('An error occured while encrypting data');
+            throw new \Exception('An error occured while encrypting data');
 
         return $RawOutput === TRUE ? $cipherText : base64_encode($cipherText);
     }
@@ -147,9 +147,9 @@ final class RSA extends AsymmetricAlgorithm
         if ($this->_publicOnly === TRUE)
             throw new \Exception('This is a public key, data cannot be decrypted !');
 
-            if (!openssl_private_decrypt($RawInput === TRUE ? $Data : base64_decode($Data), $clearText, $this->_resource))
-                throw new \Exception('An error occured while decrypting data');
+        if (!openssl_private_decrypt($RawInput === TRUE ? $Data : base64_decode($Data), $clearText, $this->_resource))
+            throw new \Exception('An error occured while decrypting data');
 
-                return $clearText;
+        return $clearText;
     }
 }
