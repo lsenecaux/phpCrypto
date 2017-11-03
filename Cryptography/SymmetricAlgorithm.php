@@ -54,7 +54,7 @@ abstract class SymmetricAlgorithm
     const KEY_SIZE_376 = 47;
     const KEY_SIZE_384 = 48;
     const KEY_SIZE_392 = 49;
-s    const KEY_SIZE_400 = 50;
+    const KEY_SIZE_400 = 50;
     const KEY_SIZE_408 = 51;
     const KEY_SIZE_416 = 52;
     const KEY_SIZE_424 = 53;
