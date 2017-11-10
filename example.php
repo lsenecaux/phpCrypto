@@ -5,8 +5,8 @@ require_once 'Cryptography/AES.php';
 require_once 'Cryptography/CipherMode.php';
 require_once 'Cryptography/PaddingMode.php';
 
-require_once 'Cryptography/AsymmetricAlgorithm.php'
-require_once 'Cryptography/RSA.php'
+require_once 'Cryptography/AsymmetricAlgorithm.php';
+require_once 'Cryptography/RSA.php';
 
 // Symmetric
 $object = \Cryptography\AES::Create();
