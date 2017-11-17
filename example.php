@@ -9,7 +9,7 @@ require_once 'Cryptography/AsymmetricAlgorithm.php';
 require_once 'Cryptography/RSA.php';
 
 // Symmetric
-$object = \Cryptography\AES::Create();
+$object = \Cryptography\AES::Create(); // $object = \Cryptography\AES::Create(\Cryptography\SymmetricAlgorithm::KEY_SIZE_256);
 $object->KeySize = \Cryptography\SymmetricAlgorithm::KEY_SIZE_256;
 $object->Mode = \Cryptography\CipherMode::CBC;
 $object->Padding = \Cryptography\PaddingMode::PKCS7;
