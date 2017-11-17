@@ -12,7 +12,7 @@ final class AES extends SymmetricAlgorithm
      * Creates a cryptographic object that is used to perform the symmetric algorithm
      * @return \Cryptography\AES
      */
-    public static function Create()
+    public static function Create($KeySize = parent::KEY_SIZE_128)
     {
         $object = new AES();
         $object->_properties['LegalKeySizes'] = array(
@@ -20,8 +20,8 @@ final class AES extends SymmetricAlgorithm
             parent::KEY_SIZE_192,
             parent::KEY_SIZE_256,
         );
-        $object->KeySize = parent::KEY_SIZE_128;
-
+        $object->KeySize = $KeySize;
+        
         // AES uses blocks of size 16 (128 bits)
         $object->_cipherAlg = MCRYPT_RIJNDAEL_128;
         $object->BlockSize = 16;
