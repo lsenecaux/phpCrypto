@@ -38,8 +38,10 @@ class HashAlgorithm
         if ($Property == 'Algorithm')
             if (!in_array(strtolower($Value), self::GetAlgorithms()))
                 throw new \Exception(sprintf('%s : Hash algorithm %s is not supported', self::GetType(), $Value));
-
-        $this->_properties[$Property] = strtolower($Value);
+            else
+                $this->_properties[$Property] = strtolower($Value);
+        
+        $this->_properties[$Property] = $Value;
     }
 
     /**
